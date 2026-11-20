@@ -1,0 +1,561 @@
+{
+  "name": "Classificador de Mensagens com IA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mensagens",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "61216b41-57d1-4a6d-8ca5-7ccf67f0131e",
+      "name": "Receber Mensagem",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "83e37059-4d66-4d4a-92d0-bfe821d8de1a"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e106ce9-d22a-4d86-833c-8a951b3ba865",
+              "name": "mensagem",
+              "value": "={{ ($json.body.mensagem || '').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "ef8b63be-3168-4809-b85d-891e9d5a5855",
+              "name": "remetente",
+              "value": "={{ $json.body.remetente || 'anônimo' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "a13fccef-7326-4b1d-b2e0-b5d883ebf1df",
+      "name": "Preparar Dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/classificar",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ mensagem: $json.mensagem, remetente: $json.remetente }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "19aac5e9-dcee-461a-a76f-6306f08522b0",
+      "name": "Classificar com IA (API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b4bd51b6-d4d9-4220-8228-f31c3e996db8",
+              "leftValue": "={{ $json.precisa_revisao }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6394b967-3fb3-4258-aa94-86c529c24c52",
+      "name": "Precisa de Revisão?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1853cd9-c7be-4d25-b1b8-ce2a9086164b",
+              "name": "encaminhado_para",
+              "value": "Revisão Humana",
+              "type": "string"
+            },
+            {
+              "id": "bf7fc5d1-20e0-447f-a110-459eb8741429",
+              "name": "email_destino",
+              "value": "triagem@empresa.com",
+              "type": "string"
+            },
+            {
+              "id": "98e1853b-eee5-4b2e-b6aa-17592903fd50",
+              "name": "motivo",
+              "value": "=Confiança baixa da IA ({{ $json.confianca }})",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "34adfe49-6940-490c-b0ee-1f6c8993bf5b",
+      "name": "Fila de Revisão Humana",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a6add865-f979-4ac1-906d-b81576e5680e",
+                    "leftValue": "={{ $json.setor }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "suporte"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Suporte Técnico"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ec46d7d1-a5c5-463d-8acb-b722b806cf1d",
+                    "leftValue": "={{ $json.setor }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "financeiro"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Financeiro"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a565f5ef-f027-4229-b42a-2e4b1907a6f6",
+                    "leftValue": "={{ $json.setor }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "comercial"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Comercial"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9bf842e6-1160-49cb-b11c-b1791b1e6202",
+                    "leftValue": "={{ $json.setor }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "atendimento"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Atendimento Geral"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 3
+        }
+      },
+      "id": "45f84efa-9276-4d54-9e78-d2a51e9ec1f0",
+      "name": "Rotear por Setor",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        900,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c66e7f6c-0125-46fd-8d10-6852d18798e1",
+              "name": "encaminhado_para",
+              "value": "Suporte Técnico",
+              "type": "string"
+            },
+            {
+              "id": "9686e48d-96a3-49b7-aa9c-01bbe705429d",
+              "name": "email_destino",
+              "value": "suporte@empresa.com",
+              "type": "string"
+            },
+            {
+              "id": "8512bc1a-db7c-4412-9b7d-11e4b2127f70",
+              "name": "prazo_resposta",
+              "value": "={{ $json.prioridade === 'alta' ? '4 horas' : $json.prioridade === 'media' ? '24 horas' : '72 horas' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "aa1eb611-ba50-4526-a466-173722508261",
+      "name": "Encaminhar: Suporte Técnico",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c4d5441-de6e-414a-9ef8-89f48d11786b",
+              "name": "encaminhado_para",
+              "value": "Financeiro",
+              "type": "string"
+            },
+            {
+              "id": "ef2929a9-ac14-4992-a6f4-a00542462010",
+              "name": "email_destino",
+              "value": "financeiro@empresa.com",
+              "type": "string"
+            },
+            {
+              "id": "6ac4c52f-12f2-4360-8892-5d51c1fe3aad",
+              "name": "prazo_resposta",
+              "value": "={{ $json.prioridade === 'alta' ? '4 horas' : $json.prioridade === 'media' ? '24 horas' : '72 horas' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "70f074e5-c3ca-4e44-9b72-9119f3b0d629",
+      "name": "Encaminhar: Financeiro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c58a657-0b97-4a6a-b307-332ad8af787e",
+              "name": "encaminhado_para",
+              "value": "Comercial",
+              "type": "string"
+            },
+            {
+              "id": "3e1a4b25-af51-4d98-b424-3f56b884f54f",
+              "name": "email_destino",
+              "value": "comercial@empresa.com",
+              "type": "string"
+            },
+            {
+              "id": "c8ac237e-189b-4b2e-b69f-7b80c1e577fc",
+              "name": "prazo_resposta",
+              "value": "={{ $json.prioridade === 'alta' ? '4 horas' : $json.prioridade === 'media' ? '24 horas' : '72 horas' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "c3c4c0f9-e271-4674-b5c0-dfc198f6eb96",
+      "name": "Encaminhar: Comercial",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35337903-c6cd-4877-89e1-d1a7035238f8",
+              "name": "encaminhado_para",
+              "value": "Atendimento Geral",
+              "type": "string"
+            },
+            {
+              "id": "4d574626-1027-4695-b082-dfc5edbb869e",
+              "name": "email_destino",
+              "value": "atendimento@empresa.com",
+              "type": "string"
+            },
+            {
+              "id": "75c0698b-f7ce-49c0-829d-0221a1f131b1",
+              "name": "prazo_resposta",
+              "value": "={{ $json.prioridade === 'alta' ? '4 horas' : $json.prioridade === 'media' ? '24 horas' : '72 horas' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "436a33d2-f07c-41c6-a76d-d7378ee14b7f",
+      "name": "Encaminhar: Atendimento Geral",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1160,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "8738cd93-e75d-4002-8829-2322969516e8",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1420,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Receber Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Preparar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Dados": {
+      "main": [
+        [
+          {
+            "node": "Classificar com IA (API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar com IA (API)": {
+      "main": [
+        [
+          {
+            "node": "Precisa de Revisão?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Precisa de Revisão?": {
+      "main": [
+        [
+          {
+            "node": "Fila de Revisão Humana",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rotear por Setor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fila de Revisão Humana": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotear por Setor": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar: Suporte Técnico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar: Financeiro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar: Comercial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar: Atendimento Geral",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar: Suporte Técnico": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar: Financeiro": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar: Comercial": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar: Atendimento Geral": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "kodieClassificador01",
+  "pinData": {}
+}
