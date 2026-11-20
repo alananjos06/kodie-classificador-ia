@@ -7,7 +7,7 @@ load_dotenv()
 
 # Endereço e modelo padrão de cada provedor (todos usam o formato compatível com OpenAI)
 PROVEDORES = {
-    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-flash-latest"),
+    "gemini": ("https://generativelanguage.googleapis.com/v1beta/openai/", "gemini-3.5-flash-lite"),
     "groq": ("https://api.groq.com/openai/v1", "llama-3.3-70b-versatile"),
     "openai": ("https://api.openai.com/v1", "gpt-4o-mini"),
 }
