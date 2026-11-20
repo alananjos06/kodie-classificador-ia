@@ -216,6 +216,15 @@ Os testes simulam a IA e por isso **não gastam chave de API**. Eles cobrem: mod
 **Encaminhar: Financeiro (Edit Fields):** define o destino e o prazo de resposta pela prioridade.
 ![Encaminhar](docs/prints/08-node-encaminhar.png)
 
+**Encaminhar: Suporte Técnico (Edit Fields):** prioridade alta → prazo de 4 horas.
+![Encaminhar Suporte](docs/prints/08b-node-encaminhar-suporte.png)
+
+**Encaminhar: Comercial (Edit Fields):** prioridade média → prazo de 24 horas.
+![Encaminhar Comercial](docs/prints/08c-node-encaminhar-comercial.png)
+
+**Encaminhar: Atendimento Geral (Edit Fields):** prioridade baixa → prazo de 72 horas.
+![Encaminhar Atendimento](docs/prints/08d-node-encaminhar-atendimento.png)
+
 **Fila de Revisão Humana (Edit Fields):** marca a mensagem para triagem manual.
 ![Revisão](docs/prints/09-node-revisao.png)
 
