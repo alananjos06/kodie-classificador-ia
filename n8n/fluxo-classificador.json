@@ -8,13 +8,13 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "61216b41-57d1-4a6d-8ca5-7ccf67f0131e",
+      "id": "302f44f3-9bd9-4028-8384-cd282253c4a1",
       "name": "Receber Mensagem",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
         0,
-        300
+        224
       ],
       "webhookId": "83e37059-4d66-4d4a-92d0-bfe821d8de1a"
     },
@@ -36,16 +36,15 @@
             }
           ]
         },
-        "includeOtherFields": false,
         "options": {}
       },
-      "id": "a13fccef-7326-4b1d-b2e0-b5d883ebf1df",
+      "id": "9fa163f7-bae1-4ef1-86a7-a4886f5dce32",
       "name": "Preparar Dados",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        220,
-        300
+        224,
+        224
       ]
     },
     {
@@ -59,13 +58,13 @@
           "timeout": 60000
         }
       },
-      "id": "19aac5e9-dcee-461a-a76f-6306f08522b0",
+      "id": "f21ebc60-04b3-4c4c-8f92-9d242ec5fee7",
       "name": "Classificar com IA (API)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        440,
-        300
+        448,
+        224
       ]
     },
     {
@@ -92,13 +91,13 @@
         },
         "options": {}
       },
-      "id": "6394b967-3fb3-4258-aa94-86c529c24c52",
+      "id": "574a762d-5677-424b-81a2-5f0ecd5e0fb4",
       "name": "Precisa de Revisão?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        660,
-        300
+        656,
+        224
       ]
     },
     {
@@ -128,13 +127,13 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "34adfe49-6940-490c-b0ee-1f6c8993bf5b",
+      "id": "4cac8ae8-b1d1-4848-8c3c-3188c0507aaa",
       "name": "Fila de Revisão Humana",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        900,
-        80
+        896,
+        0
       ]
     },
     {
@@ -146,7 +145,7 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 2
                 },
                 "conditions": [
@@ -170,7 +169,7 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 2
                 },
                 "conditions": [
@@ -194,7 +193,7 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 2
                 },
                 "conditions": [
@@ -218,7 +217,7 @@
                 "options": {
                   "caseSensitive": true,
                   "leftValue": "",
-                  "typeValidation": "loose",
+                  "typeValidation": "strict",
                   "version": 2
                 },
                 "conditions": [
@@ -243,13 +242,13 @@
           "fallbackOutput": 3
         }
       },
-      "id": "45f84efa-9276-4d54-9e78-d2a51e9ec1f0",
+      "id": "1ff0ce44-c78f-4996-8619-3a084235e7a0",
       "name": "Rotear por Setor",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        900,
-        420
+        896,
+        336
       ]
     },
     {
@@ -279,13 +278,13 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "aa1eb611-ba50-4526-a466-173722508261",
+      "id": "79fdacf9-b2a3-427b-8104-66afa3c8daae",
       "name": "Encaminhar: Suporte Técnico",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1160,
-        260
+        1168,
+        176
       ]
     },
     {
@@ -315,13 +314,13 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "70f074e5-c3ca-4e44-9b72-9119f3b0d629",
+      "id": "f24b322e-a61a-444a-be58-9ef80fca8bb1",
       "name": "Encaminhar: Financeiro",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1160,
-        420
+        1168,
+        336
       ]
     },
     {
@@ -351,13 +350,13 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "c3c4c0f9-e271-4674-b5c0-dfc198f6eb96",
+      "id": "9beacdd3-241e-40de-b71a-0d92591a4ff5",
       "name": "Encaminhar: Comercial",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1160,
-        580
+        1168,
+        496
       ]
     },
     {
@@ -387,13 +386,13 @@
         "includeOtherFields": true,
         "options": {}
       },
-      "id": "436a33d2-f07c-41c6-a76d-d7378ee14b7f",
+      "id": "5421a2d1-8c4c-4a0f-8478-30b5cd3b1a54",
       "name": "Encaminhar: Atendimento Geral",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1160,
-        740
+        1168,
+        656
       ]
     },
     {
@@ -402,16 +401,17 @@
         "responseBody": "={{ JSON.stringify($json) }}",
         "options": {}
       },
-      "id": "8738cd93-e75d-4002-8829-2322969516e8",
+      "id": "900e5dbe-46ee-4b7e-a900-97e4b00dd802",
       "name": "Responder",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        1420,
-        380
+        1424,
+        304
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Receber Mensagem": {
       "main": [
@@ -552,10 +552,19 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
-  "id": "kodieClassificador01",
-  "pinData": {}
+  "versionId": "dabd5bd1-3804-445c-b523-b4e6672d1af4",
+  "meta": {
+    "instanceId": "a0884db9b443d1cf04b5e55dc040ff031bb56f3ad1832f6cc13fd86634c4c0e1"
+  },
+  "nodeGroups": [],
+  "id": "TXBrVxzxvQcD6SLJ",
+  "tags": []
 }
